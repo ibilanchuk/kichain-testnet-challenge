@@ -68,17 +68,56 @@ $ rly light init kichain-t-4 -f
 #### Generate and open a channel between two networks 
 ```
 $ rly paths generate groot-011 kichain-t-4 transfer --port=transfer
-$ rly tx link transfer
 ```
+
 Output should be like following: 
 > I[2021-09-07|21:37:18.417] ★ Clients created: client(07-tendermint-44) on chain[groot-011] and client(07-tendermint-30) on chain[kichain-t-4] 
 
+```
+$ rly tx link transfer --debug
+```
+If something went wrong:
+```
+$ nano ~/.relayer/config/config.yaml
+```
+Delete `client-id`, `connection-id`, `channel-id` sections from the config.
+Re-initialize the light client:
+`$ rly light init groot-011 -f rly light init kichain-t-4 -f`
+Run the command to open the channel again
+`$ rly tx link transfer  -- debug`
+
+Checking the channel
+`$ rly paths list -d`
+
+Output:  
+> 0: transfer -> chns(✔) clnts(✔) conn(✔) chan(✔) (groot-011:transfer<>kichain-t-3:transfer)
 #### Let's try to send a cross-chain transaction
 
 ```
 $ rly transact transfer [src-chain-id] [dst-chain-id] [amount] [dst-addr] [flags] 
 ```
 1. Rizon to Kichain:
-`$ rly tx transfer groot-011 kichain-t-4 1000000uatolo tki1kzpp0pswwu768sejzavyfektk7nlr8ey4ehs7f  --path transfer`
+`$ rly tx transfer groot-011 kichain-t-4 1000000uatolo tki1kzpp0pswwu768sejzavyfektk7nlr8ey4ehs7f --path transfer`
 2. Kichain to Rizon:
-`$ rly tx transfer kichain-t-4 groot-011 1000000utki rizon1g64gdfuc4esvp7prkmkek9dwa69kdk6jzxsnpt  --path transfer`
+`$ rly tx transfer kichain-t-4 groot-011 1000000utki rizon1g64gdfuc4esvp7prkmkek9dwa69kdk6jzxsnpt --path transfer`
+
+### Let's try to open channel for transfers from any node
+1. Setup a service
+```
+sudo tee /etc/systemd/system/rlyd.service > /dev/null <<EOF [Unit] Description=relayer client After=network-online.target, rizond.service [Service] User=$USER ExecStart=$(which rly) start transfer Restart=always RestartSec=3 LimitNOFILE=65535 [Install] WantedBy=multi-user.target EOF
+```
+2. Start the service
+```
+sudo systemctl daemon-reload
+sudo systemctl enable rlyd
+sudo systemctl start rlyd
+```
+3. Send a transaction
+```
+$ rizond tx ibc-transfer transfer transfer channel-N <kichain-wallet-address> 1000uatolo --from <rizon-wallet-name> --fees=5000uatolo --gas=auto --chain-id groot-011
+$ kid tx ibc-transfer transfer transfer channel-N <rizon-wallet-address> 1000utki --from <kichain-wallet-name> --fees=5000utki --gas=auto --chain-id kichain-t-4 --home $HOME/testnet/kid
+
+```
+
+Note: channel number can be found by this command
+`rly paths show transfer --yaml`
