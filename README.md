@@ -90,7 +90,7 @@ Checking the channel
 `$ rly paths list -d`
 
 Output:  
-> 0: transfer -> chns(✔) clnts(✔) conn(✔) chan(✔) (groot-011:transfer<>kichain-t-3:transfer)
+> 0: transfer -> chns(✔) clnts(✔) conn(✔) chan(✔) (groot-011:transfer<>kichain-t-4:transfer)
 #### Let's try to send a cross-chain transaction
 
 ```
