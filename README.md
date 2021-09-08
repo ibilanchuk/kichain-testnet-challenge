@@ -43,7 +43,7 @@ $ rly chains add -f groot-011.json && rly chains add -f kichain-t-4.json && cd
 2. or restore:
 ```
 $ rly keys restore groot-011 <rizon-wallet-name> <mnemonic>
-$ rly keys restore  kichain-t-4 <kichain-wallet-name> <mnemonic>
+$ rly keys restore kichain-t-4 <kichain-wallet-name> <mnemonic>
 ```
 #### Let's add our keys to the rly chain
 ```
@@ -84,7 +84,7 @@ Delete `client-id`, `connection-id`, `channel-id` sections from the config.
 Re-initialize the light client:
 `$ rly light init groot-011 -f rly light init kichain-t-4 -f`
 Run the command to open the channel again
-`$ rly tx link transfer  -- debug`
+`$ rly tx link transfer --debug`
 
 Checking the channel
 `$ rly paths list -d`
@@ -99,7 +99,7 @@ $ rly transact transfer [src-chain-id] [dst-chain-id] [amount] [dst-addr] [flags
 1. Rizon to Kichain:
 `$ rly tx transfer groot-011 kichain-t-4 1000000uatolo tki1kzpp0pswwu768sejzavyfektk7nlr8ey4ehs7f --path transfer`
 2. Kichain to Rizon:
-`$ rly tx transfer kichain-t-4 groot-011 1000000utki rizon1g64gdfuc4esvp7prkmkek9dwa69kdk6jzxsnpt --path transfer`
+`$ rly tx transfer kichain-t-4 groot-011 1000000utki rizon1g64gdfuc4esvp7prkmkek9dwa69kdk6jzxsnpt --path transfer`
 
 ### Let's try to open channel for transfers from any node
 1. Setup a service
